@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>温馨提示</title>
+	</head>
+	<body>
+		<div>
+			<form action="<?php echo \think\facade\Route::buildUrl('auth/login');?>" method="post">
+				<h3> ~ 温馨提示 ~ </h3>
+				<input type="hidden" name="dopost" value="true" />
+				<p>
+					<b>提示信息：</b><?php echo $info; ?>
+				</p>
+				<p>
+					3 秒钟后将自动跳转，若不想等待，可以单击 <a href="<?php echo $link;?>">这里</a> 立即跳转
+				</p>
+			</form>
+		</div>
+	</body>
+</html>

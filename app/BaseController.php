@@ -6,6 +6,9 @@ namespace app;
 use think\App;
 use think\exception\ValidateException;
 use think\Validate;
+use think\facade\Session;
+use think\facade\Request;
+use think\facade\View;
 
 /**
  * 控制器基础类
@@ -43,16 +46,19 @@ abstract class BaseController
      */
     public function __construct(App $app)
     {
+    	echo 'BaseController __construct() ~~~~<br/>';
         $this->app     = $app;
         $this->request = $this->app->request;
-
+        
         // 控制器初始化
         $this->initialize();
     }
 
     // 初始化
     protected function initialize()
-    {}
+    {
+    	echo 'BaseController initialize() 333 ~~~~<br/>';
+    }
 
     /**
      * 验证数据
@@ -89,6 +95,52 @@ abstract class BaseController
         }
 
         return $v->failException(true)->check($data);
+    }
+    
+    
+    protected function check_session_admin()
+    {
+    	$admin = $this->get_session_admin();
+    	if(!empty($admin) && $admin['id']>0)
+    	{
+    		return $admin;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    
+    protected function get_session_admin()
+    {
+    	return Session::get('admin');
+    }
+    
+    
+    protected function is_post()
+    {
+    	$post = Request::param('dopost',false);
+    	if($post==true || $post==1){
+    		return true;
+    	}return false;
+    }
+    
+    /**
+     * 消息提示
+     * @param number $code 大于0表示操作成功，小于0表示操作失败
+     * @param string $info 提示文字信息
+     * @param number $time 停留时间
+     * @param string $link 跳转地址
+     * @param string $ico 图标
+     * @return 消息提示页面
+     */
+    protected function over($code=-200,$info='操作失败',$time=3000,$link='',$ico='error')
+    {
+    	View::assign('code',$code);
+    	View::assign('info',$info);
+    	View::assign('time',$time);
+    	View::assign('link',$link);
+    	View::assign('ico',$ico);
+    	return View::fetch('/over');
     }
 
 }
